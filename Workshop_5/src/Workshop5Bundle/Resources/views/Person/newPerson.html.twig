@@ -1,0 +1,26 @@
+{%if loadedPerson is defined %}
+    <table>
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <td>{{ loadedPerson.name }}</td>
+            </tr>
+            <tr>
+                <th>Surname</th>
+                <td>{{ loadedPerson.surname }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ loadedPerson.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+{%endif%}
+
+
+{{ form_start(form) }}
+
+{{ form_widget(form) }}
+
+{{ form_end(form) }}
+
