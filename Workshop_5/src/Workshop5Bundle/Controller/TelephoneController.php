@@ -1,4 +1,5 @@
 <?php
+
 namespace Workshop5Bundle\Controller;
 
 use Workshop5Bundle\Entity\Telephone;
@@ -7,7 +8,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
@@ -15,14 +15,11 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
  *
  * @Route("telephone")
  */
-class TelephoneController extends Controller
-{
-    
-    
-    
+class TelephoneController extends Controller {
+
     /**
      * @Route("/addTelephoneNumber/{id}")
-     * @Template("Workshop5Bundle:Address:newAddress.html.twig") 
+     * @Template("Workshop5Bundle:Telephone:newTelephone.html.twig") 
      */
     public function addTelephoneNumberAction(Request $request, $id) {
         $newTelephoneNumber = new Telephone;
@@ -55,23 +52,56 @@ class TelephoneController extends Controller
         }
         return array('form' => $form->createView());
     }
-    
-    
-    
+
+    /**
+     * @Route("/modifyTelephone/{id}")
+     * @Template("Workshop5Bundle:Telephone:newTelephone.html.twig")
+     */
+    public function modifyTeleponeAction(Request $request, $id) {
+        $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Telephone');
+        $loadedTelephone = $usersRepository->findOneById($id);
+
+
+        $form = $this->createFormBuilder($loadedTelephone)
+                ->add('telephone_number', 'number')
+                ->add('type', ChoiceType::class, array(
+                    'choices' => array(
+                        'Domowy' => 'domowy',
+                        'Służbowy' => 'sluzbowy',
+                        'Inny' => 'inny',
+                    )
+                ))
+                ->add('save', 'submit', array('label' => 'Dodaj numer telefonu'))
+                ->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $newTelephoneNumber = new Telephone;
+            $telephone = $form->getData();
+            $newTelephoneNumber->setTelephoneNumber($telephone->getTelephoneNumber());
+            $newTelephoneNumber->setType($telephone->getType());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($newTelephoneNumber);
+            $em->flush();
+            $url = $this->generateUrl('workshop5_telephone_modifytelepone', array('id' => $id, 'loadedTelephone' => $newTelephoneNumber));
+            return $this->redirect($url);
+        }
+        return array('loadedTelephone' => $loadedTelephone, 'form' => $form->createView());
+    }
+
     /**
      * Lists all telephone entities.
      *
      * @Route("/", name="telephone_index")
      * @Method("GET")
      */
-    public function indexAction()
-    {
+    public function indexAction() {
         $em = $this->getDoctrine()->getManager();
 
         $telephones = $em->getRepository('Workshop5Bundle:Telephone')->findAll();
 
         return $this->render('telephone/index.html.twig', array(
-            'telephones' => $telephones,
+                    'telephones' => $telephones,
         ));
     }
 
@@ -81,11 +111,11 @@ class TelephoneController extends Controller
      * @Route("/{id}", name="telephone_show")
      * @Method("GET")
      */
-    public function showAction(Telephone $telephone)
-    {
+    public function showAction(Telephone $telephone) {
 
         return $this->render('telephone/show.html.twig', array(
-            'telephone' => $telephone,
+                    'telephone' => $telephone,
         ));
     }
+
 }

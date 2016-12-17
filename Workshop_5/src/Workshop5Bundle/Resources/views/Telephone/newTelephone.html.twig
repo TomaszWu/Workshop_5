@@ -1,0 +1,20 @@
+{%if loadedTelephone is defined %}
+    <table>
+        <tbody>
+            <tr>
+                <th>Numer</th>
+                <td>{{ loadedTelephone.telephoneNumber }}</td>
+            </tr>
+            <tr>
+                <th>Typ</th>
+                <td>{{ loadedTelephone.type }}</td>
+            </tr>
+        </tbody>
+    </table>
+{%endif%}
+
+{{ form_start(form) }}
+
+{{ form_widget(form) }}
+
+{{ form_end(form) }}
