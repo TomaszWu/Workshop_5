@@ -3,6 +3,7 @@
 namespace Workshop5Bundle\Controller;
 
 use Workshop5Bundle\Entity\Telephone;
+use Workshop5Bundle\Entity\Person;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

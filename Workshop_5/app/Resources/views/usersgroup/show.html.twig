@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Usersgroup</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ usersGroup.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ usersGroup.name }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('usersgroup_index') }}">Back to the list</a>
+        </li>
+    </ul>
+{% endblock %}

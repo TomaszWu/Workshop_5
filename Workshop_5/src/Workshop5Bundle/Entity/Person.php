@@ -11,21 +11,29 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table(name="person")
  * @ORM\Entity(repositoryClass="Workshop5Bundle\Repository\PersonRepository")
  */
-class Person
-{
+class Person {
+
     /**
-     * @ORM\OneToMany(targetEntity="Address", mappedBy="person")
+     * @ORM\ManyToMany(targetEntity="UsersGroup", inversedBy="persons")
+     * @ORM\JoinTable(name="users_group_person")
+     */
+    private $groups;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Address", mappedBy="person", cascade={"remove"})
      */
     private $addresses;
+
     /**
-     * @ORM\OneToMany(targetEntity="Telephone", mappedBy="person")
+     * @ORM\OneToMany(targetEntity="Telephone", mappedBy="person", cascade={"remove"})
      */
     private $telephones;
+
     /**
-     * @ORM\OneToMany(targetEntity="Email", mappedBy="person")
+     * @ORM\OneToMany(targetEntity="Email", mappedBy="person", cascade={"remove"})
      */
     private $mailes;
-    
+
     /**
      * @var int
      *
@@ -56,14 +64,12 @@ class Person
      */
     private $description;
 
-
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -73,8 +79,7 @@ class Person
      * @param string $name
      * @return Person
      */
-    public function setName($name)
-    {
+    public function setName($name) {
         $this->name = $name;
 
         return $this;
@@ -85,8 +90,7 @@ class Person
      *
      * @return string 
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
@@ -96,8 +100,7 @@ class Person
      * @param string $surname
      * @return Person
      */
-    public function setSurname($surname)
-    {
+    public function setSurname($surname) {
         $this->surname = $surname;
 
         return $this;
@@ -108,8 +111,7 @@ class Person
      *
      * @return string 
      */
-    public function getSurname()
-    {
+    public function getSurname() {
         return $this->surname;
     }
 
@@ -119,8 +121,7 @@ class Person
      * @param string $description
      * @return Person
      */
-    public function setDescription($description)
-    {
+    public function setDescription($description) {
         $this->description = $description;
 
         return $this;
@@ -131,18 +132,18 @@ class Person
      *
      * @return string 
      */
-    public function getDescription()
-    {
+    public function getDescription() {
         return $this->description;
     }
+
     /**
      * Constructor
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->addresses = new \Doctrine\Common\Collections\ArrayCollection();
         $this->telephones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->mailes = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -151,8 +152,7 @@ class Person
      * @param \Workshop5Bundle\Entity\Address $addresses
      * @return Person
      */
-    public function addAddress(\Workshop5Bundle\Entity\Address $addresses)
-    {
+    public function addAddress(\Workshop5Bundle\Entity\Address $addresses) {
         $this->addresses[] = $addresses;
 
         return $this;
@@ -163,8 +163,7 @@ class Person
      *
      * @param \Workshop5Bundle\Entity\Address $addresses
      */
-    public function removeAddress(\Workshop5Bundle\Entity\Address $addresses)
-    {
+    public function removeAddress(\Workshop5Bundle\Entity\Address $addresses) {
         $this->addresses->removeElement($addresses);
     }
 
@@ -173,8 +172,7 @@ class Person
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getAddresses()
-    {
+    public function getAddresses() {
         return $this->addresses;
     }
 
@@ -184,8 +182,7 @@ class Person
      * @param \Workshop5Bundle\Entity\Telephone $telephones
      * @return Person
      */
-    public function addTelephone(\Workshop5Bundle\Entity\Telephone $telephones)
-    {
+    public function addTelephone(\Workshop5Bundle\Entity\Telephone $telephones) {
         $this->telephones[] = $telephones;
 
         return $this;
@@ -196,8 +193,7 @@ class Person
      *
      * @param \Workshop5Bundle\Entity\Telephone $telephones
      */
-    public function removeTelephone(\Workshop5Bundle\Entity\Telephone $telephones)
-    {
+    public function removeTelephone(\Workshop5Bundle\Entity\Telephone $telephones) {
         $this->telephones->removeElement($telephones);
     }
 
@@ -206,8 +202,7 @@ class Person
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getTelephones()
-    {
+    public function getTelephones() {
         return $this->telephones;
     }
 
@@ -217,8 +212,7 @@ class Person
      * @param \Workshop5Bundle\Entity\Email $mailes
      * @return Person
      */
-    public function addMaile(\Workshop5Bundle\Entity\Email $mailes)
-    {
+    public function addMaile(\Workshop5Bundle\Entity\Email $mailes) {
         $this->mailes[] = $mailes;
 
         return $this;
@@ -229,8 +223,7 @@ class Person
      *
      * @param \Workshop5Bundle\Entity\Email $mailes
      */
-    public function removeMaile(\Workshop5Bundle\Entity\Email $mailes)
-    {
+    public function removeMaile(\Workshop5Bundle\Entity\Email $mailes) {
         $this->mailes->removeElement($mailes);
     }
 
@@ -239,8 +232,78 @@ class Person
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getMailes()
-    {
+    public function getMailes() {
         return $this->mailes;
+    }
+
+
+    /**
+     * Add users
+     *
+     * @param \Workshop5Bundle\Entity\User $users
+     * @return Person
+     */
+    public function addUser(\Workshop5Bundle\Entity\User $users)
+    {
+        $this->users[] = $users;
+
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param \Workshop5Bundle\Entity\User $users
+     */
+    public function removeUser(\Workshop5Bundle\Entity\User $users)
+    {
+        $this->users->removeElement($users);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+    
+    public function __toString() {
+        return $this->name;
+    }
+
+    /**
+     * Add groups
+     *
+     * @param \Workshop5Bundle\Entity\UsersGroup $groups
+     * @return Person
+     */
+    public function addGroup(\Workshop5Bundle\Entity\UsersGroup $groups)
+    {
+        $this->groups[] = $groups;
+
+        return $this;
+    }
+
+    /**
+     * Remove groups
+     *
+     * @param \Workshop5Bundle\Entity\UsersGroup $groups
+     */
+    public function removeGroup(\Workshop5Bundle\Entity\UsersGroup $groups)
+    {
+        $this->groups->removeElement($groups);
+    }
+
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroups()
+    {
+        return $this->groups;
     }
 }

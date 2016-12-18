@@ -13,8 +13,12 @@
     </table>
 {%endif%}
 
+
+
 {{ form_start(form) }}
 
 {{ form_widget(form) }}
 
 {{ form_end(form) }}
+
+ <a href="{{ path('person_show', { 'id': loadedTelephone.id }) }}">Pokaż szczegóły</a>

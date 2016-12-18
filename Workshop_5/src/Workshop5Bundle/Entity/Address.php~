@@ -18,7 +18,6 @@ class Address
      */
     private $person;
     
-    
     /**
      * @var int
      *
@@ -157,5 +156,28 @@ class Address
     public function getHouseNumber()
     {
         return $this->houseNumber;
+    }
+
+    /**
+     * Set person
+     *
+     * @param \Workshop5Bundle\Entity\Person $person
+     * @return Address
+     */
+    public function setPerson(\Workshop5Bundle\Entity\Person $person = null)
+    {
+        $this->person = $person;
+
+        return $this;
+    }
+
+    /**
+     * Get person
+     *
+     * @return \Workshop5Bundle\Entity\Person 
+     */
+    public function getPerson()
+    {
+        return $this->person;
     }
 }

@@ -10,15 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="telephone")
  * @ORM\Entity(repositoryClass="Workshop5Bundle\Repository\TelephoneRepository")
  */
-class Telephone
-{
-    
+class Telephone {
+
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="emails")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $person;
-    
+
     /**
      * @var int
      *
@@ -42,14 +41,12 @@ class Telephone
      */
     private $type;
 
-
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -59,8 +56,7 @@ class Telephone
      * @param integer $telephoneNumber
      * @return Telephone
      */
-    public function setTelephoneNumber($telephoneNumber)
-    {
+    public function setTelephoneNumber($telephoneNumber) {
         $this->telephoneNumber = $telephoneNumber;
 
         return $this;
@@ -71,8 +67,7 @@ class Telephone
      *
      * @return integer 
      */
-    public function getTelephoneNumber()
-    {
+    public function getTelephoneNumber() {
         return $this->telephoneNumber;
     }
 
@@ -82,8 +77,7 @@ class Telephone
      * @param string $type
      * @return Telephone
      */
-    public function setType($type)
-    {
+    public function setType($type) {
         $this->type = $type;
 
         return $this;
@@ -94,8 +88,29 @@ class Telephone
      *
      * @return string 
      */
-    public function getType()
-    {
+    public function getType() {
         return $this->type;
     }
+
+    /**
+     * Set person
+     *
+     * @param \Workshop5Bundle\Entity\Person $person
+     * @return Telephone
+     */
+    public function setPerson(\Workshop5Bundle\Entity\Person $person = null) {
+        $this->person = $person;
+
+        return $this;
+    }
+
+    /**
+     * Get person
+     *
+     * @return \Workshop5Bundle\Entity\Person 
+     */
+    public function getPerson() {
+        return $this->person;
+    }
+
 }

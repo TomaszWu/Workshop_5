@@ -32,11 +32,8 @@ class PersonController extends Controller {
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             $person = $form->getData();
-            $newPerson->setName($person->getName());
-            $newPerson->setSurname($person->getSurname());
-            $newPerson->setDescription($person->getDescription());
             $em = $this->getDoctrine()->getManager();
-            $em->persist($newPerson);
+            $em->persist($person);
             $em->flush();
             $url = $this->generateUrl('person_index');
             return $this->redirect($url);
@@ -52,22 +49,24 @@ class PersonController extends Controller {
         $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
         $loadedPerson = $usersRepository->findOneById($id);
         
-        $newPerson = new Person;
         $form = $this->createFormBuilder($loadedPerson)
                 ->add('name', 'text')
                 ->add('surname', 'text')
                 ->add('description', 'text')
+                ->add('groups')
                 ->add('save', 'submit', array('label' => 'Dodaj osobę'))
                 ->getForm();
 
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
-            $person = $form->getData();
-            $loadedPerson->setName($person->getName());
-            $loadedPerson->setSurname($person->getSurname());
-            $loadedPerson->setDescription($person->getDescription());
+            $validator = $this->get('validator');
+            $errors = $validator->validate($form->getData());
+            if (count($errors) > 0) {
+                var_dump($errors);exit;
+            }
+//            $person = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            $em->persist($loadedPerson);
+            // persist nie jest potrzebny
             $em->flush();
             $url = $this->generateUrl('person_index');
             return $this->redirect($url);
@@ -119,8 +118,26 @@ class PersonController extends Controller {
     public function showAction(Person $person) {
 
         return $this->render('person/show.html.twig', array(
-                    'person' => $person,
+                    'person' => $person
         ));
     }
+    
+    
+    
+//    public function test(Request $request, Person $person) {
+//        $deleteForm = $this->createDeleteForm($person);
+//        $editForm = $this->createForm('stworzony crudem formularz', $person);
+//        $addressFrom = $this->createForm('stworzony crudem formularz');
+//        $editForm->handleRequest($request);
+//        
+//       if($editForm->isSubmitted() && $editForm->isValid()){
+//           $this->getDoctrine()->getManager()->flus();
+//           return $this->redirectToRoute('person_edit', array('person' => $person));
+//       } 
+//       
+//       
+//       
+//    }
+    
 
 }
