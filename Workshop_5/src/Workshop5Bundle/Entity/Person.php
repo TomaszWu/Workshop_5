@@ -50,6 +50,8 @@ class Person {
      */
     private $name;
 
+    
+    
     /**
      * @var string
      *
@@ -305,5 +307,16 @@ class Person {
     public function getGroups()
     {
         return $this->groups;
+    }
+    
+    
+    static function cmp_obj($a, $b)
+    {
+        $al = strtolower($a->name);
+        $bl = strtolower($b->name);
+        if ($al == $bl) {
+            return 0;
+        }
+        return ($al > $bl) ? +1 : -1;
     }
 }

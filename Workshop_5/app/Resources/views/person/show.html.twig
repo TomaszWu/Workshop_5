@@ -76,7 +76,22 @@
                     <td>
                         <p> Brak podanego adresu email. </p>
                     </td>
-
+                {%endif%}
+            </tr>
+            <tr>
+                <th>Grupy:</th>
+                    {%if person.groups | length > 0 %}
+                    <td>
+                        <ul>
+                            {% for group in person.groups %}
+                                <li>{{group.name}}</li>
+                                {%endfor%}
+                        </ul>
+                    </td>
+                {%else%}
+                    <td>
+                        <p> Użytkownik nie należy do żadnej grupy</p>
+                    </td>
                 {%endif%}
             </tr>
         </tbody>
@@ -95,5 +110,6 @@
         <li>
             <a href="{{path('workshop5_email_addemailaddress', {'id': person.id})}}">Dodaj numer telefonu</a>
         </li>
+        
     </ul>
 {% endblock %}

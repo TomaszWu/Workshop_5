@@ -6,15 +6,23 @@
     <table>
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ usersGroup.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
+                <th>Nazwa grupy:</th>
                 <td>{{ usersGroup.name }}</td>
             </tr>
         </tbody>
     </table>
+    <div>Uczesnicy grupy</div>
+    {%if usersGroup.persons | length > 0 %}
+        <ol>
+            {%for person in usersGroup.persons %}
+                <li>
+                    <p>{{person.name ~ ' ' ~ person.surname}}</p>
+                </li>
+            {% endfor%}
+        </ol>
+    {%else %}
+        <p> Brak osób w tej  grupue </p>
+    {%  endif %}
 
     <ul>
         <li>

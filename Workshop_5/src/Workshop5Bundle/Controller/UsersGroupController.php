@@ -28,18 +28,21 @@ class UsersGroupController extends Controller
                 ->add('name', 'text')
                 ->add('save', 'submit', array('label' => 'Dodaj grupę'))
                 ->getForm();
-        
+        $em = $this->getDoctrine()->getManager();
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             $group = $form->getData();
-            $em = $this->getDoctrine()->getManager();
+            
             $em->persist($group);
             $em->flush();
             $url = $this->generateUrl('usersgroup_index');
             return $this->redirect($url);
         }
         
-        return array('form' => $form->createView());
+
+        $usersGroups = $em->getRepository('Workshop5Bundle:UsersGroup')->findAll();
+
+        return array('form' => $form->createView(), 'usersGroups' => $usersGroups);
     }
     
     /**
@@ -82,7 +85,7 @@ class UsersGroupController extends Controller
      */
     public function showAction(UsersGroup $usersGroup)
     {
-
+        
         return $this->render('usersgroup/show.html.twig', array(
             'usersGroup' => $usersGroup,
         ));

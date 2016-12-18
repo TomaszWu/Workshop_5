@@ -1,4 +1,5 @@
 <?php
+
 namespace Workshop5Bundle\Controller;
 
 use Workshop5Bundle\Entity\Person;
@@ -40,15 +41,15 @@ class PersonController extends Controller {
         }
         return array('form' => $form->createView());
     }
-    
+
     /**
      * @Route("/modifyPerson/{id}")
      * @Template("Workshop5Bundle:Person:newPerson.html.twig")
      */
-    public function modifyPersonAction(Request $request, $id){
+    public function modifyPersonAction(Request $request, $id) {
         $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
         $loadedPerson = $usersRepository->findOneById($id);
-        
+
         $form = $this->createFormBuilder($loadedPerson)
                 ->add('name', 'text')
                 ->add('surname', 'text')
@@ -62,7 +63,8 @@ class PersonController extends Controller {
             $validator = $this->get('validator');
             $errors = $validator->validate($form->getData());
             if (count($errors) > 0) {
-                var_dump($errors);exit;
+                var_dump($errors);
+                exit;
             }
 //            $person = $form->getData();
             $em = $this->getDoctrine()->getManager();
@@ -73,16 +75,15 @@ class PersonController extends Controller {
         }
         return array('loadedPerson' => $loadedPerson, 'form' => $form->createView());
     }
-    
-    
+
     /**
      * @Route("/deletePerson/{id}")
      */
-    public function deletePersonAction($id){
+    public function deletePersonAction($id) {
         $repository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
         $personToDelete = $repository->find($id);
-        if(!$personToDelete){
-            return new Response ('Brak takiej osoby!');
+        if (!$personToDelete) {
+            return new Response('Brak takiej osoby!');
         } else {
             $em = $this->getDoctrine()->getManager();
             $em->remove($personToDelete);
@@ -90,8 +91,6 @@ class PersonController extends Controller {
             return new Response('Użytkownik skasowany');
         }
     }
-    
-    
 
     /**
      * Lists all person entities.
@@ -103,10 +102,19 @@ class PersonController extends Controller {
         $em = $this->getDoctrine()->getManager();
 
         $people = $em->getRepository('Workshop5Bundle:Person')->findAll();
-
+        usort($people, array("Workshop5Bundle\Entity\Person", "cmp_obj"));
         return $this->render('person/index.html.twig', array(
                     'people' => $people,
         ));
+    }
+
+    static function cmp_obj($a, $b) {
+        $al = strtolower($a->name);
+        $bl = strtolower($b->name);
+        if ($al == $bl) {
+            return 0;
+        }
+        return ($al > $bl) ? +1 : -1;
     }
 
     /**
@@ -121,9 +129,7 @@ class PersonController extends Controller {
                     'person' => $person
         ));
     }
-    
-    
-    
+
 //    public function test(Request $request, Person $person) {
 //        $deleteForm = $this->createDeleteForm($person);
 //        $editForm = $this->createForm('stworzony crudem formularz', $person);
@@ -138,6 +144,4 @@ class PersonController extends Controller {
 //       
 //       
 //    }
-    
-
 }

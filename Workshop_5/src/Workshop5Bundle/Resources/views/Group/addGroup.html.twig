@@ -1,5 +1,7 @@
-{{ form_start(form) }}
-
-{{ form_widget(form) }}
-
-{{ form_end(form) }}
+{% extends 'usersgroup/groupsIndex.html.twig' %}
+{% block newGroup %} 
+    {{parent()}}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+{% endblock %}
