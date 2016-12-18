@@ -72,7 +72,7 @@ class UsersGroupController extends Controller
 
         $usersGroups = $em->getRepository('Workshop5Bundle:UsersGroup')->findAll();
 
-        return $this->render('usersgroup/index.html.twig', array(
+        return $this->render('usersgroup/groupsIndex.html.twig', array(
             'usersGroups' => $usersGroups,
         ));
     }
@@ -86,7 +86,7 @@ class UsersGroupController extends Controller
     public function showAction(UsersGroup $usersGroup)
     {
         
-        return $this->render('usersgroup/show.html.twig', array(
+        return $this->render('Workshop5Bundle:usersgroup:show.html.twig', array(
             'usersGroup' => $usersGroup,
         ));
     }

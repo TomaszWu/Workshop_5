@@ -6,11 +6,23 @@
     <table>
         <tbody>
             <tr>
-                <th>Name</th>
-                <td>{{ usersGroup.name }}</td>
+                <th>Nazwa grupy:</th>
+                 <td>{{ usersGroup.name }}</td>
             </tr>
         </tbody>
     </table>
+    <div>Uczesnicy grupy</div>
+    {%if usersGroup.persons | length > 0 %}
+        <ol>
+            {%for person in usersGroup.persons %}
+                <li>
+                    <p><a href="{{path('person_show', {'id': person.id})}}">{{person.name ~ ' ' ~ person.surname}}</a></p>
+                </li>
+            {% endfor%}
+        </ol>
+    {%else %}
+        <p> Brak osób w tej  grupiee </p>
+    {%  endif %}
 
     <ul>
         <li>
@@ -18,3 +30,4 @@
         </li>
     </ul>
 {% endblock %}
+
