@@ -14,7 +14,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Person {
 
     /**
-     * @ORM\ManyToMany(targetEntity="Person", mappedBy="groups")
+     * @ORM\ManyToMany(targetEntity="UsersGroup", inversedBy="persons")
+     * @ORM\JoinTable(name="users_group_person")
      */
     private $groups;
 
@@ -49,6 +50,8 @@ class Person {
      */
     private $name;
 
+    
+    
     /**
      * @var string
      *
@@ -142,6 +145,7 @@ class Person {
         $this->addresses = new \Doctrine\Common\Collections\ArrayCollection();
         $this->telephones = new \Doctrine\Common\Collections\ArrayCollection();
         $this->mailes = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -270,5 +274,49 @@ class Person {
     
     public function __toString() {
         return $this->name;
+    }
+
+    /**
+     * Add groups
+     *
+     * @param \Workshop5Bundle\Entity\UsersGroup $groups
+     * @return Person
+     */
+    public function addGroup(\Workshop5Bundle\Entity\UsersGroup $groups)
+    {
+        $this->groups[] = $groups;
+
+        return $this;
+    }
+
+    /**
+     * Remove groups
+     *
+     * @param \Workshop5Bundle\Entity\UsersGroup $groups
+     */
+    public function removeGroup(\Workshop5Bundle\Entity\UsersGroup $groups)
+    {
+        $this->groups->removeElement($groups);
+    }
+
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+    
+    
+    static function cmp_obj($a, $b)
+    {
+        $al = strtolower($a->name);
+        $bl = strtolower($b->name);
+        if ($al == $bl) {
+            return 0;
+        }
+        return ($al > $bl) ? +1 : -1;
     }
 }

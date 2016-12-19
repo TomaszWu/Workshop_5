@@ -84,7 +84,7 @@
                     <td>
                         <ul>
                             {% for group in person.groups %}
-                                <li>{{group.name}}</li>
+                                <li><a href="{{path('usersgroup_show', {'id': group.id})}}}">{{group.name}}</a></li>
                                 {%endfor%}
                         </ul>
                     </td>
@@ -102,14 +102,13 @@
             <a href="{{ path('person_index') }}">Back to the list</a>
         </li>
         <li>
-            <a href="{{path('workshop5_person_newpersonacction', {'id': person.id})}}">Dodaj adres</a>
+            <a href="{{ path('workshop5_person_editperson', { 'id': person.id }) }}">Zmodyfikuj osobę</a>
         </li>
-        <li>
-            <a href="{{path('workshop5_telephone_addtelephonenumber', {'id': person.id})}}">Dodaj numer telefonu</a>
-        </li>
-        <li>
-            <a href="{{path('workshop5_email_addemailaddress', {'id': person.id})}}">Dodaj numer telefonu</a>
-        </li>
-        
     </ul>
+            
+            
+            
+            
+            
+            
 {% endblock %}

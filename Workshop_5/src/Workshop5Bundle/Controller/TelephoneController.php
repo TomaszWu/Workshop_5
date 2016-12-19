@@ -41,10 +41,7 @@ class TelephoneController extends Controller {
 
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
-            $telephoneNumber = $form->getData();
-            $newTelephoneNumber->setTelephoneNumber($telephoneNumber->getTelephoneNumber());
-            $newTelephoneNumber->setType($telephoneNumber->getType());
-            $newTelephoneNumber->setPerson($loadedPerson);
+            $newTelephoneNumber = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($newTelephoneNumber);
             $em->flush();

@@ -6,7 +6,6 @@
     <table>
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Surname</th>
                 <th>Description</th>
@@ -14,9 +13,19 @@
             </tr>
         </thead>
         <tbody>
+        <div>
+            {{ form_start(newPersonForm) }}
+            {{ form_widget(newPersonForm) }}
+            {{ form_end(newPersonForm) }}
+        </div>
+        <ul>
+            <li>
+                <a href="{{path('workshop5_usersgroup_addgroup')}}">Dodaj nową grupę</a>
+            </li>
+        </ul>
+        <div>
             {% for person in people %}
                 <tr>
-                    <td><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.id }}</a></td>
                     <td>{{ person.name }}</td>
                     <td>{{ person.surname }}</td>
                     <td>{{ person.description }}</td>
@@ -26,25 +35,16 @@
                                 <a href="{{ path('person_show', { 'id': person.id }) }}">Pokaż szczegóły</a>
                             </li>
                             <li>
-                                <a href="{{ path('workshop5_person_modifyperson', { 'id': person.id }) }}">Zmodyfikuj osobę</a>
-                            </li>
-                            <li>
                                 <a href="{{ path('workshop5_person_deleteperson', { 'id': person.id }) }}">Skasuj osobę</a>
                             </li>
                         </ul>
                     </td>
                 </tr>
             {% endfor %}
-        </tbody>
+            </tbody>
     </table>
-    <ul>
-        <li>
-            <a href="{{ path('workshop5_person_newpersonacction')}}">Dodaj osobę</a>
-        </li>
-        <li>
-            <a href="{{path('workshop5_usersgroup_addgroup')}}">Dodaj nową grupę</a>
-        </li>
-    </ul>
+
+
 
 
 

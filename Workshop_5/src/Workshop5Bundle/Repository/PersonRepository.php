@@ -12,4 +12,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class PersonRepository extends EntityRepository
 {
+    
+    public function findAPerson($personToCheck) {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+                'SELECT u FROM Workshop5Bundle u'
+                . ' WHERE u.name = :personToCheck OR u.surname = :personToCheck'
+                )->setParameter('personToCheck', $personToCheck);
+        $person = $query->getResult();
+        return $person;
+    }
 }

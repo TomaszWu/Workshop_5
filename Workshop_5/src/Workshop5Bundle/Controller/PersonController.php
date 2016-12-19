@@ -3,12 +3,17 @@
 namespace Workshop5Bundle\Controller;
 
 use Workshop5Bundle\Entity\Person;
+use Workshop5Bundle\Form\PersonType;
+use Workshop5Bundle\Form\AddressType;
+use Workshop5Bundle\Form\TelephoneType;
+use Workshop5Bundle\Form\EmailType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Person controller.
@@ -96,15 +101,25 @@ class PersonController extends Controller {
      * Lists all person entities.
      *
      * @Route("/", name="person_index")
-     * @Method("GET")
      */
-    public function indexAction() {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
+
+        $newPerson = new Person;
+        $newPersonForm = $this->createForm(new PersonType(), $newPerson)
+                ->add('save', 'submit', array('label' => 'Dodaj osobę'));
+        
+        $newPersonForm->handleRequest($request);
+        if ($newPersonForm->isSubmitted()) {
+            $person = $newPersonForm->getData();
+            $em->persist($person);
+            $em->flush();
+        }
 
         $people = $em->getRepository('Workshop5Bundle:Person')->findAll();
         usort($people, array("Workshop5Bundle\Entity\Person", "cmp_obj"));
         return $this->render('person/index.html.twig', array(
-                    'people' => $people,
+                    'people' => $people, 'newPersonForm' => $newPersonForm->createView(),
         ));
     }
 
@@ -130,18 +145,71 @@ class PersonController extends Controller {
         ));
     }
 
-//    public function test(Request $request, Person $person) {
+    /**
+     * @Route("/editPerson/{id}")
+     * @Template("Workshop5Bundle:test:test.html.twig")
+     */
+    public function editPersonAction(Request $request, $id) {
+        $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
+        $i = 0;
+        $loadedPerson = $usersRepository->findOneById($id);
+        $editForm = $this->createForm(new PersonType(), $loadedPerson);
+        $addressFrom = $this->createForm(new AddressType());
+        $telephoneFrom = $this->createForm(new TelephoneType());
+        $emailFrom = $this->createForm(new EmailType());
+
+        $editForm->handleRequest($request);
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $i++;
+        }
+        $addressFrom->handleRequest($request);
+        if ($addressFrom->isSubmitted() && $addressFrom->isValid()) {
+            $address = $addressFrom->getData();
+            $address->setPerson($loadedPerson);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($address);
+            $em->flush();
+            $i++;
+        }
+        $telephoneFrom->handleRequest($request);
+        if ($telephoneFrom->isSubmitted() && $telephoneFrom->isValid()) {
+            $telephone = $telephoneFrom->getData();
+            $telephone->setPerson($loadedPerson);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($telephone);
+            $em->flush();
+            $i++;
+        }
+        $emailFrom->handleRequest($request);
+        if ($emailFrom->isSubmitted() && $emailFrom->isValid()) {
+            $email = $emailFrom->getData();
+            $email->setPerson($emailFrom);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($email);
+            $em->flush();
+            $i++;
+        }
+        if ($i > 0) {
+            return $this->redirectToRoute('person_show', array('id' => $id));
+        }
+
+        return array('editForm' => $editForm->createView(), 'addressForm' => $addressFrom->createView(),
+            'telephoneForm' => $telephoneFrom->createView(), 'emailForm' => $emailFrom->createView());
+    }
+
+//    public function editPersonAction(Request $request, Person $person) {
 //        $deleteForm = $this->createDeleteForm($person);
-//        $editForm = $this->createForm('stworzony crudem formularz', $person);
-//        $addressFrom = $this->createForm('stworzony crudem formularz');
+//        $editForm = $this->createForm('Workshop5Bundle\Entity\Person', $person);
+//        $addressFrom = $this->createForm('Workshop5Bundle\Entity\Address');
 //        $editForm->handleRequest($request);
 //        
 //       if($editForm->isSubmitted() && $editForm->isValid()){
 //           $this->getDoctrine()->getManager()->flus();
 //           return $this->redirectToRoute('person_edit', array('person' => $person));
 //       } 
-//       
-//       
-//       
-//    }
+//       if($editForm->isSubmitted() && $editForm->isValid()){
+//           $this->getDoctrine()->getManager()->flus();
+//           return $this->redirectToRoute('person_edit', array('person' => $person));
+//       } 
 }
