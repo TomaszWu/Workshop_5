@@ -112,5 +112,9 @@ class Telephone {
     public function getPerson() {
         return $this->person;
     }
+    
+     public function __toString() {
+        return $this->type;
+    }
 
 }

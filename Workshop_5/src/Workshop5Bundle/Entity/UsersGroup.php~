@@ -3,6 +3,8 @@
 namespace Workshop5Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * UsersGroup
@@ -13,8 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 class UsersGroup {
 
     /**
-     * @ORM\ManyToMany(targetEntity="UsersGroup", inversedBy="users")
-     * @ORM\JoinTable(name="users_groups")
+     * @ORM\ManyToMany(targetEntity="Person", mappedBy="groups")
      */
     private $persons;
 
@@ -69,7 +70,7 @@ class UsersGroup {
      */
     public function __construct()
     {
-        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->persons = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -107,5 +108,38 @@ class UsersGroup {
     
     public function __toString() {
         return $this->name;
+    }
+
+    /**
+     * Add persons
+     *
+     * @param \Workshop5Bundle\Entity\Person $persons
+     * @return UsersGroup
+     */
+    public function addPerson(\Workshop5Bundle\Entity\Person $persons)
+    {
+        $this->persons[] = $persons;
+
+        return $this;
+    }
+
+    /**
+     * Remove persons
+     *
+     * @param \Workshop5Bundle\Entity\Person $persons
+     */
+    public function removePerson(\Workshop5Bundle\Entity\Person $persons)
+    {
+        $this->persons->removeElement($persons);
+    }
+
+    /**
+     * Get persons
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPersons()
+    {
+        return $this->persons;
     }
 }

@@ -108,18 +108,33 @@ class PersonController extends Controller {
         $newPerson = new Person;
         $newPersonForm = $this->createForm(new PersonType(), $newPerson)
                 ->add('save', 'submit', array('label' => 'Dodaj osobę'));
-        
+
+        $lookingForForm = $this->createFormBuilder()
+                ->add('name', 'text')
+                ->add('save', 'submit', array('label' => 'Kogo szukasz?'))
+                ->getForm();
+
+        $lookingForForm->handleRequest($request);
+        if ($lookingForForm->isSubmitted()) {
+            $nameToFind = $lookingForForm->getData();
+            $repository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
+            $personYouAreLookingFor = $repository->findAPerson($nameToFind['name']);
+            return $this->render('searchResult.html.twig', array('personYouAreLookingFor' =>
+                $personYouAreLookingFor));
+            
+        }
+
         $newPersonForm->handleRequest($request);
         if ($newPersonForm->isSubmitted()) {
             $person = $newPersonForm->getData();
             $em->persist($person);
             $em->flush();
         }
-
         $people = $em->getRepository('Workshop5Bundle:Person')->findAll();
         usort($people, array("Workshop5Bundle\Entity\Person", "cmp_obj"));
         return $this->render('person/index.html.twig', array(
                     'people' => $people, 'newPersonForm' => $newPersonForm->createView(),
+                    'lookingForForm' => $lookingForForm->createView(),
         ));
     }
 

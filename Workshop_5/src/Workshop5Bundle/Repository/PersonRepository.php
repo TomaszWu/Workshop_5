@@ -16,8 +16,8 @@ class PersonRepository extends EntityRepository
     public function findAPerson($personToCheck) {
         $em = $this->getEntityManager();
         $query = $em->createQuery(
-                'SELECT u FROM Workshop5Bundle u'
-                . ' WHERE u.name = :personToCheck OR u.surname = :personToCheck'
+                'SELECT u FROM Workshop5Bundle:Person u'
+                . ' WHERE u.name = :personToCheck '
                 )->setParameter('personToCheck', $personToCheck);
         $person = $query->getResult();
         return $person;
