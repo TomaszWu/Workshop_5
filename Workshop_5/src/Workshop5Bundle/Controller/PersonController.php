@@ -119,9 +119,8 @@ class PersonController extends Controller {
             $nameToFind = $lookingForForm->getData();
             $repository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
             $personYouAreLookingFor = $repository->findAPerson($nameToFind['name']);
-            return $this->render('searchResult.html.twig', array('personYouAreLookingFor' =>
+            return $this->render('person/searchResult.html.twig', array('personYouAreLookingFor' =>
                 $personYouAreLookingFor));
-            
         }
 
         $newPersonForm->handleRequest($request);
@@ -168,7 +167,7 @@ class PersonController extends Controller {
         $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
         $i = 0;
         $loadedPerson = $usersRepository->findOneById($id);
-        $editForm = $this->createForm(new PersonType(), $loadedPerson);
+        $editForm = $this->createForm(new PersonType(), $loadedPerson)->add('groups');
         $addressFrom = $this->createForm(new AddressType());
         $telephoneFrom = $this->createForm(new TelephoneType());
         $emailFrom = $this->createForm(new EmailType());

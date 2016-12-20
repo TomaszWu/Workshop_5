@@ -13,7 +13,7 @@ class PersonType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name')->add('surname')->add('description')->add('groups') 
+        $builder->add('name')->add('surname')->add('description') 
                 ->add('save', 'submit', array('label' => 'Zmodyfikuj osobę'));
     }
     
