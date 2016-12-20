@@ -45,18 +45,6 @@ class UsersGroupController extends Controller
         return array('form' => $form->createView(), 'usersGroups' => $usersGroups);
     }
     
-    /**
-     * @Route("/addGroup/{id}")
-     * @Template("Workshop5Bundle:Group:addGroup.html.twig")
-     */
-    public function addUserToGroup(Request $request, $id){
-        $form = $this->createFormBuilder($newGroup)
-                ->add('user', 'text')
-                ->add('save', 'submit', array('label' => 'Dodaj grupę'))
-                ->getForm();
-        $form->handleRequest($request);
-        
-    }
     
     
     
@@ -86,7 +74,7 @@ class UsersGroupController extends Controller
     public function showAction(UsersGroup $usersGroup)
     {
         
-        return $this->render('Workshop5Bundle:usersgroup:show.html.twig', array(
+        return $this->render('Workshop5Bundle:Usersgroup:show.html.twig', array(
             'usersGroup' => $usersGroup,
         ));
     }

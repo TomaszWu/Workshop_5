@@ -3,6 +3,7 @@
 namespace Workshop5Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Address
@@ -10,14 +11,14 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="address")
  * @ORM\Entity(repositoryClass="Workshop5Bundle\Repository\AddressRepository")
  */
-class Address
-{
+class Address {
+
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="addresses")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $person;
-    
+
     /**
      * @var int
      *
@@ -29,40 +30,42 @@ class Address
 
     /**
      * @var string
-     *
+     * @Assert\Length(min=5,
+     * minMessage = "Długość imienia to minimum 5 znaków."
+     * )
      * @ORM\Column(name="city", type="string", length=255)
      */
     private $city;
 
     /**
      * @var string
-     *
+     * @Assert\Length(min=2,
+     * minMessage = "Długość imienia to minimum 5 znaków."
+     * )
      * @ORM\Column(name="street", type="string", length=255)
      */
     private $street;
 
     /**
      * @var int
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="flat_number", type="integer")
      */
     private $flatNumber;
 
     /**
      * @var int
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="house_number", type="integer")
      */
     private $houseNumber;
-
 
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -72,8 +75,7 @@ class Address
      * @param string $city
      * @return Address
      */
-    public function setCity($city)
-    {
+    public function setCity($city) {
         $this->city = $city;
 
         return $this;
@@ -84,8 +86,7 @@ class Address
      *
      * @return string 
      */
-    public function getCity()
-    {
+    public function getCity() {
         return $this->city;
     }
 
@@ -95,8 +96,7 @@ class Address
      * @param string $street
      * @return Address
      */
-    public function setStreet($street)
-    {
+    public function setStreet($street) {
         $this->street = $street;
 
         return $this;
@@ -107,8 +107,7 @@ class Address
      *
      * @return string 
      */
-    public function getStreet()
-    {
+    public function getStreet() {
         return $this->street;
     }
 
@@ -118,8 +117,7 @@ class Address
      * @param integer $flatNumber
      * @return Address
      */
-    public function setFlatNumber($flatNumber)
-    {
+    public function setFlatNumber($flatNumber) {
         $this->flatNumber = $flatNumber;
 
         return $this;
@@ -130,8 +128,7 @@ class Address
      *
      * @return integer 
      */
-    public function getFlatNumber()
-    {
+    public function getFlatNumber() {
         return $this->flatNumber;
     }
 
@@ -141,8 +138,7 @@ class Address
      * @param integer $houseNumber
      * @return Address
      */
-    public function setHouseNumber($houseNumber)
-    {
+    public function setHouseNumber($houseNumber) {
         $this->houseNumber = $houseNumber;
 
         return $this;
@@ -153,8 +149,7 @@ class Address
      *
      * @return integer 
      */
-    public function getHouseNumber()
-    {
+    public function getHouseNumber() {
         return $this->houseNumber;
     }
 
@@ -164,8 +159,7 @@ class Address
      * @param \Workshop5Bundle\Entity\Person $person
      * @return Address
      */
-    public function setPerson(\Workshop5Bundle\Entity\Person $person = null)
-    {
+    public function setPerson(\Workshop5Bundle\Entity\Person $person = null) {
         $this->person = $person;
 
         return $this;
@@ -176,8 +170,8 @@ class Address
      *
      * @return \Workshop5Bundle\Entity\Person 
      */
-    public function getPerson()
-    {
+    public function getPerson() {
         return $this->person;
     }
+
 }

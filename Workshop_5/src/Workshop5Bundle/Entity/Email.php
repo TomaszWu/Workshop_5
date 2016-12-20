@@ -3,7 +3,7 @@
 namespace Workshop5Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Email
  *
@@ -31,7 +31,9 @@ class Email
 
     /**
      * @var string
-     *
+     * @Assert\Length(min=5,
+     * minMessage = "Długość imienia to minimum znaków."
+     * )
      * @ORM\Column(name="email_address", type="string", length=255)
      */
     private $emailAddress;

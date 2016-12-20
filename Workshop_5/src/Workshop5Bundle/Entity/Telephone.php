@@ -3,7 +3,7 @@
 namespace Workshop5Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Telephone
  *
@@ -29,7 +29,9 @@ class Telephone {
 
     /**
      * @var int
-     *
+     * @Assert\Length(min=5,
+     * minMessage = "Długość nr to minimum 7 znaków."
+     * )
      * @ORM\Column(name="telephone_number", type="integer")
      */
     private $telephoneNumber;

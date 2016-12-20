@@ -4,7 +4,7 @@ namespace Workshop5Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Person
  *
@@ -45,30 +45,33 @@ class Person {
 
     /**
      * @var string
-     *
+     * @Assert\Length(min=5,
+     * minMessage = "Długość imienia to minimum 5 znaków."
+     * )
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
-    
-    
     /**
      * @var string
-     *
+     * @Assert\Length(min=5,
+     * minMessage = "Długość naziwska to minimum 5 znaków."
+     * )
      * @ORM\Column(name="surname", type="string", length=255)
      */
     private $surname;
 
     /**
      * @var string
-     *
+     * @Assert\Length(min=8,
+     * minMessage = "Długość opisu to minimum 8 znaków."
+     * )
      * @ORM\Column(name="description", type="string", length=255)
      */
     private $description;
 
     /**
      * Get id
-     *
      * @return integer 
      */
     public function getId() {
@@ -238,15 +241,13 @@ class Person {
         return $this->mailes;
     }
 
-
     /**
      * Add users
      *
      * @param \Workshop5Bundle\Entity\User $users
      * @return Person
      */
-    public function addUser(\Workshop5Bundle\Entity\User $users)
-    {
+    public function addUser(\Workshop5Bundle\Entity\User $users) {
         $this->users[] = $users;
 
         return $this;
@@ -257,8 +258,7 @@ class Person {
      *
      * @param \Workshop5Bundle\Entity\User $users
      */
-    public function removeUser(\Workshop5Bundle\Entity\User $users)
-    {
+    public function removeUser(\Workshop5Bundle\Entity\User $users) {
         $this->users->removeElement($users);
     }
 
@@ -267,11 +267,10 @@ class Person {
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getUsers()
-    {
+    public function getUsers() {
         return $this->users;
     }
-    
+
     public function __toString() {
         return $this->name;
     }
@@ -282,8 +281,7 @@ class Person {
      * @param \Workshop5Bundle\Entity\UsersGroup $groups
      * @return Person
      */
-    public function addGroup(\Workshop5Bundle\Entity\UsersGroup $groups)
-    {
+    public function addGroup(\Workshop5Bundle\Entity\UsersGroup $groups) {
         $this->groups[] = $groups;
 
         return $this;
@@ -294,8 +292,7 @@ class Person {
      *
      * @param \Workshop5Bundle\Entity\UsersGroup $groups
      */
-    public function removeGroup(\Workshop5Bundle\Entity\UsersGroup $groups)
-    {
+    public function removeGroup(\Workshop5Bundle\Entity\UsersGroup $groups) {
         $this->groups->removeElement($groups);
     }
 
@@ -304,14 +301,11 @@ class Person {
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getGroups()
-    {
+    public function getGroups() {
         return $this->groups;
     }
-    
-    
-    static function cmp_obj($a, $b)
-    {
+
+    static function cmp_obj($a, $b) {
         $al = strtolower($a->name);
         $bl = strtolower($b->name);
         if ($al == $bl) {
@@ -319,4 +313,5 @@ class Person {
         }
         return ($al > $bl) ? +1 : -1;
     }
+
 }

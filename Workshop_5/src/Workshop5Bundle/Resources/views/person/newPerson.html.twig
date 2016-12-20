@@ -1,4 +1,14 @@
-{%if loadedPerson is defined %}
+
+{% if errors is defined %}
+    <ul>
+        {% for error in errors %}
+            <li>{{ error.message }}</li>
+            {% endfor %}
+    </ul>
+{% else %}
+
+
+{%loadedPerson is defined %}
     <table>
         <tbody>
             <tr>

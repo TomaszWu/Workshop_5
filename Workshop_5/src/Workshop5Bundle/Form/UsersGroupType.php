@@ -6,15 +6,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PersonType extends AbstractType
+class UsersGroupType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name')->add('surname')->add('description') 
-                ;
+        $builder->add('name')->add('persons')        ;
     }
     
     /**
@@ -23,7 +22,7 @@ class PersonType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Workshop5Bundle\Entity\Person'
+            'data_class' => 'Workshop5Bundle\Entity\UsersGroup'
         ));
     }
 
@@ -32,7 +31,7 @@ class PersonType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'workshop5bundle_person';
+        return 'workshop5bundle_usersgroup';
     }
 
 

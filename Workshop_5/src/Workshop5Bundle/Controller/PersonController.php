@@ -7,8 +7,6 @@ use Workshop5Bundle\Form\PersonType;
 use Workshop5Bundle\Form\AddressType;
 use Workshop5Bundle\Form\TelephoneType;
 use Workshop5Bundle\Form\EmailType;
-use Workshop5Bundle\Form\UsersGroupType;
-use Workshop5Bundle\Entity\UsersGroup;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -120,67 +118,78 @@ class PersonController extends Controller {
         $i = 0;
         $loadedPerson = $usersRepository->findOneById($id);
         $editForm = $this->createForm(new PersonType(), $loadedPerson)
-                ->add('save', 'submit', array('label' => 'Zmodyfikuj osobę'));
-        $usersGroupForm = $this->createFormBuilder($loadedPerson)
                 ->add('groups')
-                ->add('add', 'submit', array('label' => 'Dodaj grupę'))
-                ->getForm();
+                ->add('save', 'submit', array('label' => 'Zmodyfikuj osobę'));
         $addressFrom = $this->createForm(new AddressType());
         $telephoneFrom = $this->createForm(new TelephoneType());
         $emailFrom = $this->createForm(new EmailType());
 
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+
             $this->getDoctrine()->getManager()->flush();
+
             $i++;
         }
         $addressFrom->handleRequest($request);
         if ($addressFrom->isSubmitted() && $addressFrom->isValid()) {
             $address = $addressFrom->getData();
-            $address->setPerson($loadedPerson);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($address);
-            $em->flush();
-            $i++;
-        }
-        $usersGroupForm->handleRequest($request);
-        if ($usersGroupForm->isSubmitted() && $usersGroupForm->isValid()) {
-            $usersGroup = $usersGroupForm->getData();
-            var_dump($usersGroup);exit;
-            foreach ($usersGroup as $group){
-            $group->addPerson($loadedPerson);
-            
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($group);
-            $em->flush();
+            $validator = $this->get('validator');
+            $errors = $validator->validate($address);
+            if (count($errors) > 0) {
+                return array(
+                    'errors' => $errors,
+                );
+            } else {
+                $address->setPerson($loadedPerson);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($address);
+                $em->flush();
+                $i++;
             }
-            $i++;
         }
         $telephoneFrom->handleRequest($request);
         if ($telephoneFrom->isSubmitted() && $telephoneFrom->isValid()) {
             $telephone = $telephoneFrom->getData();
-            $telephone->setPerson($loadedPerson);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($telephone);
-            $em->flush();
-            $i++;
+            $validator = $this->get('validator');
+            $errors = $validator->validate($telephone);
+            if (count($errors) > 0) {
+                return array(
+                    'errors' => $errors,
+                );
+            } else {
+                $telephone->setPerson($loadedPerson);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($telephone);
+                $em->flush();
+                $i++;
+            }
         }
         $emailFrom->handleRequest($request);
         if ($emailFrom->isSubmitted() && $emailFrom->isValid()) {
             $email = $emailFrom->getData();
-            $email->setPerson($emailFrom);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($email);
-            $em->flush();
-            $i++;
+            $validator = $this->get('validator');
+            $errors = $validator->validate($email);
+            if (count($errors) > 0) {
+                return array(
+                    'errors' => $errors,
+                );
+            } else {
+                $email->setPerson($emailFrom);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($email);
+                $em->flush();
+                $i++;
+            }
         }
         if ($i > 0) {
             return $this->redirectToRoute('person_show', array('id' => $id));
         }
 
+
         return array('editForm' => $editForm->createView(), 'addressForm' => $addressFrom->createView(),
             'telephoneForm' => $telephoneFrom->createView(), 'emailForm' => $emailFrom->createView(),
-             'usersGroupForm' => $usersGroupForm->createView(),);
+        );
     }
 
     /**
@@ -197,7 +206,7 @@ class PersonController extends Controller {
             $em->flush();
             return new Response('<div>Użytkownik skasowany<div>
                     <div><a href="/../../person/">powrót</a></div>'
-                    );
+            );
         }
     }
 

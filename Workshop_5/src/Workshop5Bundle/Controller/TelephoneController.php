@@ -55,37 +55,37 @@ class TelephoneController extends Controller {
      * @Route("/modifyTelephone/{id}")
      * @Template("Workshop5Bundle:Telephone:newTelephone.html.twig")
      */
-    public function modifyTeleponeAction(Request $request, $id) {
-        $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Telephone');
-        $loadedTelephone = $usersRepository->findOneById($id);
-
-
-        $form = $this->createFormBuilder($loadedTelephone)
-                ->add('telephone_number', 'number')
-                ->add('type', ChoiceType::class, array(
-                    'choices' => array(
-                        'Domowy' => 'domowy',
-                        'Służbowy' => 'sluzbowy',
-                        'Inny' => 'inny',
-                    )
-                ))
-                ->add('save', 'submit', array('label' => 'Dodaj numer telefonu'))
-                ->getForm();
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            $newTelephoneNumber = new Telephone;
-            $telephone = $form->getData();
-            $newTelephoneNumber->setTelephoneNumber($telephone->getTelephoneNumber());
-            $newTelephoneNumber->setType($telephone->getType());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($newTelephoneNumber);
-            $em->flush();
-            $url = $this->generateUrl('workshop5_telephone_modifytelepone', array('id' => $id, 'loadedTelephone' => $newTelephoneNumber));
-            return $this->redirect($url);
-        }
-        return array('loadedTelephone' => $loadedTelephone, 'form' => $form->createView());
-    }
+//    public function modifyTeleponeAction(Request $request, $id) {
+//        $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Telephone');
+//        $loadedTelephone = $usersRepository->findOneById($id);
+//
+//
+//        $form = $this->createFormBuilder($loadedTelephone)
+//                ->add('telephone_number', 'number')
+//                ->add('type', ChoiceType::class, array(
+//                    'choices' => array(
+//                        'Domowy' => 'domowy',
+//                        'Służbowy' => 'sluzbowy',
+//                        'Inny' => 'inny',
+//                    )
+//                ))
+//                ->add('save', 'submit', array('label' => 'Dodaj numer telefonu'))
+//                ->getForm();
+//
+//        $form->handleRequest($request);
+//        if ($form->isSubmitted()) {
+//            $newTelephoneNumber = new Telephone;
+//            $telephone = $form->getData();
+//            $newTelephoneNumber->setTelephoneNumber($telephone->getTelephoneNumber());
+//            $newTelephoneNumber->setType($telephone->getType());
+//            $em = $this->getDoctrine()->getManager();
+//            $em->persist($newTelephoneNumber);
+//            $em->flush();
+//            $url = $this->generateUrl('workshop5_telephone_modifytelepone', array('id' => $id, 'loadedTelephone' => $newTelephoneNumber));
+//            return $this->redirect($url);
+//        }
+//        return array('loadedTelephone' => $loadedTelephone, 'form' => $form->createView());
+//    }
 
     /**
      * Lists all telephone entities.
