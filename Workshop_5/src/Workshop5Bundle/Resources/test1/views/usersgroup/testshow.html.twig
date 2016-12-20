@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Usersgroup</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Nazwa grupy:</th>
+                <td>{{ usersGroup.name }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div>Uczesnicy grupy</div>
+    {%if usersGroup.persons | length > 0 %}
+        <ol>
+            {%for person in usersGroup.persons %}
+                <li>
+                    <p>{{person.name ~ ' ' ~ person.surname}}</p>
+                </li>
+            {% endfor%}
+        </ol>
+    {%else %}
+        <p> Brak osób w tej  grupie </p>
+    {%  endif %}
+
+    <ul>
+        <li>
+            <a href="{{ path('usersgroup_index') }}">Back to the list</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -7,6 +7,8 @@ use Workshop5Bundle\Form\PersonType;
 use Workshop5Bundle\Form\AddressType;
 use Workshop5Bundle\Form\TelephoneType;
 use Workshop5Bundle\Form\EmailType;
+use Workshop5Bundle\Form\UsersGroupType;
+use Workshop5Bundle\Entity\UsersGroup;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -24,7 +26,7 @@ class PersonController extends Controller {
 
     /**
      * @Route("/newPerson")
-     * @Template("Workshop5Bundle:Person:newPerson.html.twig")
+     * @Template("Workshop5Bundle:person:newPerson.html.twig")
      */
     public function newPersonAcction(Request $request) {
         $newPerson = new Person;
@@ -45,56 +47,6 @@ class PersonController extends Controller {
             return $this->redirect($url);
         }
         return array('form' => $form->createView());
-    }
-
-    /**
-     * @Route("/modifyPerson/{id}")
-     * @Template("Workshop5Bundle:Person:newPerson.html.twig")
-     */
-    public function modifyPersonAction(Request $request, $id) {
-        $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
-        $loadedPerson = $usersRepository->findOneById($id);
-
-        $form = $this->createFormBuilder($loadedPerson)
-                ->add('name', 'text')
-                ->add('surname', 'text')
-                ->add('description', 'text')
-                ->add('groups')
-                ->add('save', 'submit', array('label' => 'Dodaj osobę'))
-                ->getForm();
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            $validator = $this->get('validator');
-            $errors = $validator->validate($form->getData());
-            if (count($errors) > 0) {
-                var_dump($errors);
-                exit;
-            }
-//            $person = $form->getData();
-            $em = $this->getDoctrine()->getManager();
-            // persist nie jest potrzebny
-            $em->flush();
-            $url = $this->generateUrl('person_index');
-            return $this->redirect($url);
-        }
-        return array('loadedPerson' => $loadedPerson, 'form' => $form->createView());
-    }
-
-    /**
-     * @Route("/deletePerson/{id}")
-     */
-    public function deletePersonAction($id) {
-        $repository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
-        $personToDelete = $repository->find($id);
-        if (!$personToDelete) {
-            return new Response('Brak takiej osoby!');
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($personToDelete);
-            $em->flush();
-            return new Response('Użytkownik skasowany');
-        }
     }
 
     /**
@@ -120,7 +72,7 @@ class PersonController extends Controller {
             $repository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
             $personYouAreLookingFor = $repository->findAPerson($nameToFind['name']);
             return $this->render('person/searchResult.html.twig', array('personYouAreLookingFor' =>
-                $personYouAreLookingFor));
+                        $personYouAreLookingFor));
         }
 
         $newPersonForm->handleRequest($request);
@@ -131,7 +83,7 @@ class PersonController extends Controller {
         }
         $people = $em->getRepository('Workshop5Bundle:Person')->findAll();
         usort($people, array("Workshop5Bundle\Entity\Person", "cmp_obj"));
-        return $this->render('person/index.html.twig', array(
+        return $this->render('/person/index.html.twig', array(
                     'people' => $people, 'newPersonForm' => $newPersonForm->createView(),
                     'lookingForForm' => $lookingForForm->createView(),
         ));
@@ -161,13 +113,18 @@ class PersonController extends Controller {
 
     /**
      * @Route("/editPerson/{id}")
-     * @Template("Workshop5Bundle:test:test.html.twig")
+     * @Template("Workshop5Bundle:person:editPerson.html.twig")
      */
     public function editPersonAction(Request $request, $id) {
         $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
         $i = 0;
         $loadedPerson = $usersRepository->findOneById($id);
-        $editForm = $this->createForm(new PersonType(), $loadedPerson)->add('groups');
+        $editForm = $this->createForm(new PersonType(), $loadedPerson)
+                ->add('save', 'submit', array('label' => 'Zmodyfikuj osobę'));
+        $usersGroupForm = $this->createFormBuilder($loadedPerson)
+                ->add('groups')
+                ->add('add', 'submit', array('label' => 'Dodaj grupę'))
+                ->getForm();
         $addressFrom = $this->createForm(new AddressType());
         $telephoneFrom = $this->createForm(new TelephoneType());
         $emailFrom = $this->createForm(new EmailType());
@@ -184,6 +141,19 @@ class PersonController extends Controller {
             $em = $this->getDoctrine()->getManager();
             $em->persist($address);
             $em->flush();
+            $i++;
+        }
+        $usersGroupForm->handleRequest($request);
+        if ($usersGroupForm->isSubmitted() && $usersGroupForm->isValid()) {
+            $usersGroup = $usersGroupForm->getData();
+            var_dump($usersGroup);exit;
+            foreach ($usersGroup as $group){
+            $group->addPerson($loadedPerson);
+            
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($group);
+            $em->flush();
+            }
             $i++;
         }
         $telephoneFrom->handleRequest($request);
@@ -209,7 +179,26 @@ class PersonController extends Controller {
         }
 
         return array('editForm' => $editForm->createView(), 'addressForm' => $addressFrom->createView(),
-            'telephoneForm' => $telephoneFrom->createView(), 'emailForm' => $emailFrom->createView());
+            'telephoneForm' => $telephoneFrom->createView(), 'emailForm' => $emailFrom->createView(),
+             'usersGroupForm' => $usersGroupForm->createView(),);
+    }
+
+    /**
+     * @Route("/deletePerson/{id}")
+     */
+    public function deletePersonAction($id) {
+        $repository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
+        $personToDelete = $repository->find($id);
+        if (!$personToDelete) {
+            return new Response('Brak takiej osoby!');
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($personToDelete);
+            $em->flush();
+            return new Response('<div>Użytkownik skasowany<div>
+                    <div><a href="/../../person/">powrót</a></div>'
+                    );
+        }
     }
 
 //    public function editPersonAction(Request $request, Person $person) {
@@ -226,4 +215,39 @@ class PersonController extends Controller {
 //           $this->getDoctrine()->getManager()->flus();
 //           return $this->redirectToRoute('person_edit', array('person' => $person));
 //       } 
+//    /**
+//     * @Route("/modifyPerson/{id}")
+//     * @Template("Workshop5Bundle:person:newPerson.html.twig")
+//     */
+//    public function modifyPersonAction(Request $request, $id) {
+//        $usersRepository = $this->getDoctrine()->getRepository('Workshop5Bundle:Person');
+//        $loadedPerson = $usersRepository->findOneById($id);
+//
+//        $form = $this->createFormBuilder($loadedPerson)
+//                ->add('name', 'text')
+//                ->add('surname', 'text')
+//                ->add('description', 'text')
+//                ->add('groups')
+//                ->add('save', 'submit', array('label' => 'Dodaj osobę'))
+//                ->getForm();
+//
+//        $form->handleRequest($request);
+//        if ($form->isSubmitted()) {
+//            $validator = $this->get('validator');
+//            $errors = $validator->validate($form->getData());
+//            if (count($errors) > 0) {
+//                var_dump($errors);
+//                exit;
+//            }
+////            $person = $form->getData();
+//            $em = $this->getDoctrine()->getManager();
+//            // persist nie jest potrzebny
+//            $em->flush();
+//            $url = $this->generateUrl('person_index');
+//            return $this->redirect($url);
+//        }
+//        return array('loadedPerson' => $loadedPerson, 'form' => $form->createView());
+//    }
+//
+//  
 }

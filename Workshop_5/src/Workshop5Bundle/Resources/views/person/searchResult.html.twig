@@ -1,0 +1,12 @@
+{% if personYouAreLookingFor %}
+    <ul>
+        {%for person in personYouAreLookingFor %}
+            <li><a href="{{path('person_show', {'id': person.id})}}">{{person.name ~ ' ' ~person.surname}}</a></li>
+            {%endfor%}
+        <li>
+            <a href="{{ path('person_index') }}">Powrót do strony głównej</a>
+        </li>
+    </ul>
+{% else %}
+    <div><a href="{{ path('person_index') }}">Brak takiego  użykownika w bazie. Powrót do strony głównej</a></div>    
+{%endif%}
