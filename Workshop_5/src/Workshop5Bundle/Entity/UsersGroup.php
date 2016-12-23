@@ -142,4 +142,6 @@ class UsersGroup {
     {
         return $this->persons;
     }
+    
+    
 }

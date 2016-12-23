@@ -7,6 +7,7 @@ use Workshop5Bundle\Form\PersonType;
 use Workshop5Bundle\Form\AddressType;
 use Workshop5Bundle\Form\TelephoneType;
 use Workshop5Bundle\Form\EmailType;
+use Workshop5Bundle\Form\UsersGroupType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
